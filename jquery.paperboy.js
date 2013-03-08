@@ -34,44 +34,26 @@
 	methods = {
 
 		subscribe : function( sChannel_,fn_ ) {
-			// methods._channelCreate(sChannel_)
- 			if (!_oSubscriptions[sChannel_].Callbacks)  {
-				_oSubscriptions[sChannel_].Callbacks = jQuery.Callbacks('unique');
+ 			if (!_oSubscriptions[sChannel_])  {
+				_oSubscriptions[sChannel_] = jQuery.Callbacks('unique');
 			}
-			_oSubscriptions[sChannel_].Callbacks.add(fn_);
+			_oSubscriptions[sChannel_].add(fn_);
 			return this;
 		},
 
 		unsubscribe : function( sChannel_,fn_ ) {
-		  	if( _oSubscriptions[sChannel_].Callbacks && _oSubscriptions[sChannel_].Callbacks.has(fn_) ) {
-				_oSubscriptions[sChannel_].Callbacks.remove(fn_);
+		  	if( _oSubscriptions[sChannel_] && _oSubscriptions[sChannel_].has(fn_) ) {
+				_oSubscriptions[sChannel_].remove(fn_);
 			}
 			return this;
 		},
 
 		publish : function( sChannel_,aData_,oContext_ ) {
-			if(_oSubscriptions[sChannel_].Callbacks) {
-				_oSubscriptions[sChannel_].Callbacks.fireWith(oContext_||this,aData_);
+			if(_oSubscriptions[sChannel_]) {
+				_oSubscriptions[sChannel_].fireWith(oContext_||this,aData_);
 			}
 			return this;
 		},
-
-		_channelCreate: function(sChannel_) {
-			var _col = sChannel_.split('/');
-			// set namespace
-			var _oBase = _oSubscriptions;
-			for (var _i = 0; _i < _col.length; _i++) {
-				// don't have current obj
-				if (typeof(_oBase[_col[_i]]) === 'undefined') {
-					// add obj
-					_oBase[_col[_i]] = {};
-				}
-				_oBase = _oBase[_col[_i]];
-			}
-			// _oSubscriptions =  _oBase;
-			console.log('-',_oSubscriptions)
-		},
-
 
 		flush : function () {
 			_oSubscriptions = {};
