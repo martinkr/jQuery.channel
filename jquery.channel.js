@@ -9,32 +9,30 @@
  * @example:
 
  *
- * Copyright (c) 2012 Martin Krause (jquery.public.mkrause.info)
+ * Copyright (c) 2012 Martin Krause (jQuery.public.mkrause.info)
  * Dual licensed under the MIT and GPL licenses.
  *
  * @author Martin Krause public@mkrause.info
- * @copyright Martin Krause (jquery.public.mkrause.info)
+ * @copyright Martin Krause (jQuery.public.mkrause.info)
  * @license MIT http://www.opensource.org/licenses/mit-license.php
  * @license GNU http://www.gnu.org/licenses/gpl-3.0.html
  *
  * @requires
- *  jQuery JavaScript Library - http://jquery.com/, v1.5+
+ *  jQuery JavaScript Library - http://jQuery.com/, v1.5+
  *    Copyright 2010, John Resig
- *    Dual licensed under the MIT or GPL Version 2 licenses - http://jquery.org/license
+ *    Dual licensed under the MIT or GPL Version 2 licenses - http://jQuery.org/license
  *
  */
-
-// JSLint setting, @see http://www.jslint.com/lint.html#options
-/*jslint devel: false, browser: true, continue: true, eqeq: true, vars: true, evil: true, white: true, forin: true, css: true, cap: true, nomen: true, plusplus: true, maxerr: 500, indent: 4 */
 
 
 (function( $ ){
 
-	var _oSubscriptions = {},
-		_aWildcards = []
-		;
+	"use strict";
 
-	_methods = {
+	var _oSubscriptions = {},
+		_aWildcards = [],
+
+		_methods = {
 
 		/**
 		 * Normalizes channel names by removing trailing slashes if neccessary
@@ -51,7 +49,7 @@
 		 * @return {Void}
 		 */
 		_setWildcard : function (sChannel_) {
- 			if ( sChannel_.indexOf('*') !== -1 && jQuery.inArray( sChannel_, _aWildcards) === -1 ) {
+			if ( sChannel_.indexOf('*') !== -1 && $.inArray( sChannel_, _aWildcards) === -1 ) {
 				_aWildcards.push(sChannel_);
 			}
 		},
@@ -61,9 +59,9 @@
 		 * @param  {String} sChannel_ current channel
 		 * @return {Void}
 		 */
- 		_unsetWildcard : function (sChannel_) {
-			var _iPos = jQuery.inArray( sChannel_, _aWildcards);
- 			if ( sChannel_.indexOf('*') !== -1 && _iPos !== -1 ) {
+		_unsetWildcard : function (sChannel_) {
+			var _iPos = $.inArray( sChannel_, _aWildcards);
+			if ( sChannel_.indexOf('*') !== -1 && _iPos !== -1 ) {
 				 _aWildcards.splice(_iPos, 1 );
 			}
 		},
@@ -76,11 +74,11 @@
 		 */
 		_filterCallbacks: function  (sChannel_){
 
-			var _i
+			var _i,
 				_aChannels = []
 				;
-console.log('---')
- console.log('filter callbacks for :' ,sChannel_, ' with wildcards ', _aWildcards)
+// console.log('---')
+// console.log('filter callbacks for :' ,sChannel_, ' with wildcards ', _aWildcards)
 			// push the current channel
 			if (_oSubscriptions[sChannel_])  {
 				_aChannels.push(sChannel_);
@@ -88,20 +86,15 @@ console.log('---')
 
 			// get all
 			for (_i = 0; _i < _aWildcards.length; _i++) {
- 				// check if wildcard is STRING/*  or STRING* and this wildcard matches the current channel
-				if ( _aWildcards[_i].lastIndexOf('*') === _aWildcards[_i].length-1 && sChannel_.indexOf(_aWildcards[_i].slice(0,-1)) === 0 ) {
+
+				var _regExp = new RegExp('^'+_aWildcards[_i],"g");
+				if ( _regExp.test(sChannel_)  ) {
 					_aChannels.push(_aWildcards[_i]);
 				}
-				// var _regExp = new RegExp(_aWildcards[_i],"g");
-
-
-				// if ( _regExp.test(sChannel_)  ) {
-				// 	_aChannels.push(_aWildcards[_i]);
-				// }
 
 			}
 
-console.log('sChannel_: ', sChannel_, ' resulted in callbacks: ', _aChannels)
+// console.log('sChannel_: ', sChannel_, ' resulted in callbacks: ', _aChannels)
 
 			return _aChannels;
 		},
@@ -109,16 +102,16 @@ console.log('sChannel_: ', sChannel_, ' resulted in callbacks: ', _aChannels)
 
 		/**
 		 * Subscribes to channel
-		 * @param  {String} sChannel_ 	Channel, e.g. news/world
+		 * @param  {String} sChannel_   Channel, e.g. news/world
 		 * @param  {Function} fn_       Callback
 		 * @return {jQuery-Collection}  this
 		 */
 		subscribe : function( sChannel_,fn_ ) {
 			var sChannel_ = _methods._normalize(sChannel_);
 			_methods._setWildcard(sChannel_);
-console.log('sub: ',sChannel_)
- 			if (!_oSubscriptions[sChannel_])  {
-				_oSubscriptions[sChannel_] = jQuery.Callbacks('unique');
+
+			if (!_oSubscriptions[sChannel_])  {
+				_oSubscriptions[sChannel_] = $.Callbacks('unique');
 			}
 
 			_oSubscriptions[sChannel_].add(fn_);
@@ -127,7 +120,7 @@ console.log('sub: ',sChannel_)
 
 		/**
 		 * Unsubscribes from channel
-		 * @param  {String} sChannel_ 	Channel, e.g. news/world
+		 * @param  {String} sChannel_   Channel, e.g. news/world
 		 * @param  {Function} fn_       Callback
 		 * @return {jQuery-Collection}  this
 		 */
@@ -135,7 +128,7 @@ console.log('sub: ',sChannel_)
 			var sChannel_ = _methods._normalize(sChannel_);
 			_methods._unsetWildcard(sChannel_);
 
-		  	if( _oSubscriptions[sChannel_] && _oSubscriptions[sChannel_].has(fn_) ) {
+			if( _oSubscriptions[sChannel_] && _oSubscriptions[sChannel_].has(fn_) ) {
 				_oSubscriptions[sChannel_].remove(fn_);
 			}
 			return this;
@@ -143,9 +136,9 @@ console.log('sub: ',sChannel_)
 
 		/**
 		 * Publishes to channel
-		 * @param  {String} sChannel_ 	Channel, e.g. news/world
-		 * @param  {Array} aData_		Custom data passed as argument to the registered callback
-		 * @param  {Object} oContext_	Changes the context (this) inside the callback function
+		 * @param  {String} sChannel_   Channel, e.g. news/world
+		 * @param  {Array} aData_       Custom data passed as argument to the registered callback
+		 * @param  {Object} oContext_   Changes the context (this) inside the callback function
 		 * @return {jQuery-Collection}  this
 		 */
 		publish : function( sChannel_,aData_,oContext_ ) {
@@ -188,26 +181,26 @@ console.log('sub: ',sChannel_)
 	 * @return {jQuery-Collection}  this
 	 */
 	$.channel = $.fn.channel = function( method_ ) {
-		// Method calling logic  see http://docs.jquery.com/Plugins/Authoring
+		"use strict";
 		if ( _methods[method_] ) {
 			return _methods[ method_ ].apply( this, Array.prototype.slice.call( arguments, 1 ));
-		} else if ( typeof method_ === 'object' || ! method ) {
+		} else if ( typeof method_ === 'object' || ! method_ ) {
 			return _methods.init.apply( this, arguments );
 		} else {
 			$.error( 'Method ' +  method_ + ' does not exist on jQuery.channel' );
 		}
- 	};
+	};
 
 })( jQuery );
 
 /* test functions */
-$.fn.channel.debug = function( ){
-	return $.channel('debug');
+jQuery.fn.channel.debug = function( ){
+	return jQuery.channel('debug');
 };
-$.fn.channel.debugWildcards = function( ){
-	return $.channel('debugWildcards');
+jQuery.fn.channel.debugWildcards = function( ){
+	return jQuery.channel('debugWildcards');
 };
-$.fn.channel.flush = function( ){
-	return $.channel('flush');
+jQuery.fn.channel.flush = function( ){
+	return jQuery.channel('flush');
 };
 

@@ -1,7 +1,7 @@
 {
     "name": "channel",
     "version": "1.1.0",
-    "title": "jQuery.channel - smart publish/subscribe",
+    "title": "jQuery.channel - smart pub/sub",
     "author": {
         "name": "Martin Krause",
         "url": "http://martinkr.github.com/"
@@ -17,14 +17,15 @@
     "dependencies": {
         "jquery": ">=1.7"
     },
-    "description": "",
+    "description": "jQuery.channel is a complete pub/sub implementation build on top of jQuery.Callbacks. It preserves the jQuery-chain! $('div').channel('subscribe' ... ) and  you can use regular expressions (containing*) as wildcards begining on the starting position within the string. So it's possible to subscribe to multiple channels with just one call: $.channel('subscribe','CHANNEL/SUB.*',myFunction) "
     "keywords": [
         "publish",
-        "bubscribe",
+        "ubscribe",
         "decoupling",
         "event-driven",
         "observer",
         "pattern",
+        "regexp",
         "api"
     ],
     "bugs": "https://github.com/martinkr/jQuery.channel/issues",

@@ -1,10 +1,10 @@
 <a name="README">[jQuery.channel](https://github.com/martinkr/jQuery.channel)</a>
 =======
-jQuery.channel is a complete publish / subsriber implementation build on top of jQuery.Callbacks.
+jQuery.channel is a complete pub/sub implementation build on top of jQuery.Callbacks.
 
 ###Features
 - preserves the jQuery-chain! $('div').channel('subscribe' ... )
-- use wildcards - subscribe to multiple channels with just one call: $.channel('subscribe','CHANNEL/SUB*',myFunction)
+- use regular expressions as wildcards begining on the starting position within the string. - subscribe to multiple channels with just one call: $.channel('subscribe','CHANNEL/SUB*',myFunction)
 
 
 ## Examples
@@ -12,6 +12,9 @@ jQuery.channel is a complete publish / subsriber implementation build on top of 
 ### Subscribe:
 <pre>
 	jQuery.channel('subscribe','CHANNEL/FOO/BAR', myFunction );
+	jQuery.channel('subscribe','CHANNEL/FOO.*', myFunction );
+	jQuery.channel('subscribe','CHANNEL/*.FOO/', myFunction );
+	jQuery.channel('subscribe','CHANNEL/*.FOO.*/', myFunction );
 </pre>
 
 ### Unsubscribe
