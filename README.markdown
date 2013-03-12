@@ -1,35 +1,38 @@
-<a name="README">[jStorage](https://github.com/martinkr/jStorage)</a>
+<a name="README">[jQuery.channel](https://github.com/martinkr/jQuery.channel)</a>
 =======
-**jStorage provides an convenient API for storing values.
-Use the same API for storing your data in localStorage, sessionStorage, cookies (bonus: cookies as localStorage/sessionStorage fallback!) and jQuery.data.**
+jQuery.channel is a complete publish / subsriber implementation build on top of jQuery.Callbacks.
+
+###Features
+- preserves the jQuery-chain! $('div').channel('subscribe' ... )
+- use wildcards - subscribe to multiple channels with just one call: $.channel('subscribe','CHANNEL/SUB*',myFunction)
+
 
 ## Examples
 
-### Create & Update:
+### Subscribe:
 <pre>
-	_jQuery.storage.setItem('key','value','localStorage|sessionStorage|cookie|data');
+	jQuery.channel('subscribe','CHANNEL/FOO/BAR', myFunction );
 </pre>
 
-### Delete
+### Unsubscribe
 <pre>
-	jQuery.storage.removeItem('key','localStorage|sessionStorage|cookie|data');
+	jQuery.channel('unsubscribe','CHANNEL/FOO/BAR', myFunction )
 </pre>
 
-### Read
+### Publish
 <pre>
-	jQuery.storage.getItem('key','localStorage|sessionStorage|cookie|data');
+	jQuery.channel('publish','CHANNEL/FOO/BAR')
 </pre>
 
-### Length (returns the number of key/value pairs for this specific type)
+## Advanced
+Use Wildcards.
 <pre>
-	jQuery.storage.lenght('localStorage|sessionStorage|cookie|data');
+	$.channel('subscribe','CHANNEL/SUB*',myFunction)
 </pre>
 
-Convenient: If you skip the last "type" parameter, jStorage automatically uses the last type you used to store your data with.
 
 ## Requires
- * jQuery JavaScript Library - http://jquery.com/; Copyright 2010, John Resig; Dual licensed under the MIT or GPL Version 2 licenses - http://jquery.org/license
- * jCookie JavaScript Library - http://jquery.com/; Copyright 2008-2011, Martin Krause; Dual licensed under the MIT or GPL Version 2 licenses
+ * jQuery JavaScript Library 1.7+ - http://jquery.com/; Copyright 2010, John Resig; Dual licensed under the MIT or GPL Version 2 licenses - http://jquery.org/license
 
 ## License
 Dual licensed under the MIT and GPL licenses.
@@ -37,4 +40,4 @@ Dual licensed under the MIT and GPL licenses.
 * MIT - http://www.opensource.org/licenses/mit-license.php
 * GNU - http://www.gnu.org/licenses/gpl-3.0.html
 
-Copyright (c) 2011Martin Krause (jquery.public.mkrause.info)
+Copyright (c) 2011 Martin Krause (jquery.public.mkrause.info)

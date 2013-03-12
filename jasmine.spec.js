@@ -37,7 +37,7 @@ describe('jQuery.channel ', function() {
     _context = {'context':'context'};
     window.CheckOne = null;
     window.CheckTwo = null;
-    window.callbackFoo =  window.callbackBar = function () {
+    window.callbackFoo =  window.callbackBar = window.callbackBaz = window.callbackFooBar =  function () {
       // console.log('this: ',this)
       window.CheckOne = arguments[0]==_sBar;
       window.CheckTwo = this == _context;
@@ -54,15 +54,15 @@ describe('jQuery.channel ', function() {
   /**
    * INTERFACE
    */
-  // it('should expose a method called "subscribe" ',function () {
+  // xit('should expose a method called "subscribe" ',function () {
   //   expect(typeof $.channel.subscribe).toBe('function');
   // });
 
-  // it('should expose a method called "unsubscribe" ',function () {
+  // xit('should expose a method called "unsubscribe" ',function () {
   //   expect(typeof $.channel.unsubscribe).toBe('function');
   // });
 
-  // it('should expose a method called "publish" ',function () {
+  // xit('should expose a method called "publish" ',function () {
   //   expect(typeof $.channel.publish).toBe('function');
   // });
 
@@ -70,7 +70,7 @@ describe('jQuery.channel ', function() {
  * subscribe
  */
 
-  it('should subscribe to a channel "foo" using "subscribe" ',function () {
+  xit('should subscribe to a channel "foo" using "subscribe" ',function () {
     expect($.channel.debug()[_sFoo]).toBe(undefined);
     $.channel('subscribe',_sFoo,window.callbackFoo);
     expect($.channel.debug()[_sFoo].has(window.callbackFoo)).toBeTruthy();
@@ -78,7 +78,7 @@ describe('jQuery.channel ', function() {
   });
 
 
-  it('should subscribe multiple callbacks to a single channel "foo" using "subscribe"  ',function () {
+  xit('should subscribe multiple callbacks to a single channel "foo" using "subscribe"  ',function () {
 
     expect($.channel.debug()[_sFoo]).toBe(undefined);
 
@@ -94,7 +94,7 @@ describe('jQuery.channel ', function() {
   });
 
 
-  it('should subscribe callbacks to different channels using "subscribe"  ',function () {
+  xit('should subscribe callbacks to different channels using "subscribe"  ',function () {
 
     expect($.channel.debug()[_sFoo]).toBe(undefined);
     expect($.channel.debug()[_sBar]).toBe(undefined);
@@ -110,27 +110,304 @@ describe('jQuery.channel ', function() {
 
   });
 
- it('should subscribe callbacks to different nested channels "FOO/BAR", "FOO/BAZ" using "subscribe"  ',function () {
+   xit('should subscribe a callbacks to a channel ONCE even if subscribe has been called multiplet imes  ',function () {
+
+    expect($.channel.debug()[_sFoo]).toBe(undefined);
+
+    spyOn(window, 'callbackFoo').andCallThrough();
+
+    $.channel('subscribe',_sFoo,window.callbackFoo);
+    $.channel('subscribe',_sFoo,window.callbackFoo);
+    $.channel('subscribe',_sFoo,window.callbackFoo);
+
+    expect($.channel.debug()[_sFoo].has(window.callbackFoo)).toBeTruthy();
+
+    expect(window.callbackFoo.callCount).toBe(0);
+    $.channel('publish',_sFoo);
+    expect(window.callbackFoo).toHaveBeenCalled();
+    expect(window.callbackFoo.callCount).toBe(1);
+
+  });
+
+
+  xit('should normalize subscriptions: FOO/BAR and FOO/BAR represent the same channel ',function () {
 
     expect($.channel.debug()[_sFoo+'/'+_sBar]).toBe(undefined);
-    expect($.channel.debug()[_sFoo+'/'+_sBaz]).toBe(undefined);
+    expect($.channel.debug()[_sFoo+'/'+_sBar+'/']).toBe(undefined);
 
     spyOn(window, 'callbackFoo').andCallThrough();
     spyOn(window, 'callbackBar').andCallThrough();
 
     $.channel('subscribe',_sFoo+'/'+_sBar,window.callbackFoo);
-    $.channel('subscribe',_sFoo+'/'+_sBaz,window.callbackBar);
+    $.channel('subscribe',_sFoo+'/'+_sBar+'/',window.callbackBar);
 
+    expect($.channel.debug()[_sFoo+'/'+_sBar+'/']).toBe(undefined);
     expect($.channel.debug()[_sFoo+'/'+_sBar].has(window.callbackFoo)).toBeTruthy();
-    expect($.channel.debug()[_sFoo+'/'+_sBaz].has(window.callbackBar)).toBeTruthy();
+    expect($.channel.debug()[_sFoo+'/'+_sBar].has(window.callbackBar)).toBeTruthy();
+
+    expect(window.callbackFoo.callCount).toBe(0);
+    expect(window.callbackBar.callCount).toBe(0);
+
+    $.channel('publish',_sFoo+'/'+_sBar);
+
+    expect(window.callbackFoo.callCount).toBe(1);
+    expect(window.callbackBar.callCount).toBe(1);
+
+    $.channel('publish',_sFoo+'/'+_sBar+'/');
+
+    expect(window.callbackFoo.callCount).toBe(2);
+    expect(window.callbackBar.callCount).toBe(2);
+
+    $.channel('unsubscribe',_sFoo+'/'+_sBar+'/',window.callbackFoo);
+    $.channel('unsubscribe',_sFoo+'/'+_sBar,window.callbackBar);
+
+    expect($.channel.debug()[_sFoo+'/'+_sBar].has(window.callbackFoo)).not.toBeTruthy();
+    expect($.channel.debug()[_sFoo+'/'+_sBar].has(window.callbackBar)).not.toBeTruthy();
 
   });
 
-/**
+
+  /** nested */
+
+ xit('should subscribe callbacks to different nested channels "FOO/BAR", "FOO/BAZ", "FOO/BAR/BAZ" using "subscribe"  ',function () {
+
+    expect($.channel.debug()[_sFoo+'/'+_sBar]).toBe(undefined);
+    expect($.channel.debug()[_sFoo+'/'+_sBaz]).toBe(undefined);
+    expect($.channel.debug()[_sFoo+'/'+_sBar+'/'+_sBaz]).toBe(undefined);
+
+    spyOn(window, 'callbackFoo').andCallThrough();
+    spyOn(window, 'callbackBar').andCallThrough();
+    spyOn(window, 'callbackBaz').andCallThrough();
+
+    $.channel('subscribe',_sFoo+'/'+_sBar,window.callbackFoo);
+    $.channel('subscribe',_sFoo+'/'+_sBaz,window.callbackBar);
+    $.channel('subscribe',_sFoo+'/'+_sBar+'/'+_sBaz,window.callbackBaz);
+
+    expect($.channel.debug()[_sFoo+'/'+_sBar].has(window.callbackFoo)).toBeTruthy();
+    expect($.channel.debug()[_sFoo+'/'+_sBaz].has(window.callbackBar)).toBeTruthy();
+    expect($.channel.debug()[_sFoo+'/'+_sBar+'/'+_sBaz].has(window.callbackBaz)).toBeTruthy();
+
+  });
+
+xit('should unsubscribe from channel  "FOO/BAR/BAZ" while preserving subscription to "FOO/BAR/BAR"  ',function () {
+
+    expect($.channel.debug()[_sFoo+'/'+_sBar+'/'+_sBar]).toBe(undefined);
+    expect($.channel.debug()[_sFoo+'/'+_sBar+'/'+_sBaz]).toBe(undefined);
+
+    spyOn(window, 'callbackBar').andCallThrough();
+    spyOn(window, 'callbackBaz').andCallThrough();
+
+    $.channel('subscribe',_sFoo+'/'+_sBar+'/'+_sBar,window.callbackBar);
+    $.channel('subscribe',_sFoo+'/'+_sBar+'/'+_sBaz,window.callbackBaz);
+
+    expect($.channel.debug()[_sFoo+'/'+_sBar+'/'+_sBar].has(window.callbackBar)).toBeTruthy();
+    expect($.channel.debug()[_sFoo+'/'+_sBar+'/'+_sBaz].has(window.callbackBzr)).toBeTruthy();
+
+    $.channel('unsubscribe',_sFoo+'/'+_sBar+'/'+_sBaz,window.callbackBaz);
+
+    expect($.channel.debug()[_sFoo+'/'+_sBar+'/'+_sBar].has(window.callbackBar)).toBeTruthy();
+    expect($.channel.debug()[_sFoo+'/'+_sBar+'/'+_sBaz].has(window.callbackBzr)).not.toBeTruthy();
+
+  });
+
+
+  /** nested */
+
+ it('should subscribe, unsubscribe and publish to multiple channels using the /* wildcard ',function () {
+
+    expect($.channel.debug()[_sFoo]).toBe(undefined);
+    expect($.channel.debug()[_sFoo+'/*']).toBe(undefined);
+    expect($.channel.debug()[_sFoo+'/'+_sBar]).toBe(undefined);
+    expect($.channel.debug()[_sFoo+'/'+_sBar+'/'+_sBaz]).toBe(undefined);
+
+    spyOn(window, 'callbackFoo').andCallThrough();
+    spyOn(window, 'callbackBar').andCallThrough();
+    spyOn(window, 'callbackBaz').andCallThrough();
+    spyOn(window, 'callbackFooBar').andCallThrough();
+
+    $.channel('subscribe',_sFoo+'/*',window.callbackFoo);
+    $.channel('subscribe',_sFoo+'/'+_sBar,window.callbackBar);
+    $.channel('subscribe',_sFoo+'/'+_sBar+'/'+_sBaz,window.callbackBaz);
+
+    expect($.channel.debugWildcards()).toEqual([_sFoo+'/*']);
+    expect($.channel.debug()[_sFoo+'/'+'*'].has(window.callbackFoo)).toBeTruthy();
+    expect($.channel.debug()[_sFoo+'/'+_sBar].has(window.callbackBar)).toBeTruthy();
+    expect($.channel.debug()[_sFoo+'/'+_sBar+'/'+_sBaz].has(window.callbackBaz)).toBeTruthy();
+
+    $.channel('publish',_sBar);
+
+    expect(window.callbackFoo.callCount).toBe(0);
+    expect(window.callbackBar.callCount).toBe(0);
+    expect(window.callbackBaz.callCount).toBe(0);
+    expect(window.callbackFooBar.callCount).toBe(0);
+
+    $.channel('publish',_sFoo);
+
+    expect(window.callbackFoo.callCount).toBe(0);
+    expect(window.callbackBar.callCount).toBe(0);
+    expect(window.callbackBaz.callCount).toBe(0);
+    expect(window.callbackFooBar.callCount).toBe(0);
+
+    $.channel('publish',_sFoo+'/'+_sBaz);
+
+    expect(window.callbackFoo.callCount).toBe(1);
+    expect(window.callbackBar.callCount).toBe(0);
+    expect(window.callbackBaz.callCount).toBe(0);
+    expect(window.callbackFooBar.callCount).toBe(0);
+
+    $.channel('publish',_sFoo+'/'+_sBar);
+
+    expect(window.callbackFoo.callCount).toBe(2);
+    expect(window.callbackBar.callCount).toBe(1);
+    expect(window.callbackBaz.callCount).toBe(0);
+    expect(window.callbackFooBar.callCount).toBe(0);
+
+
+    $.channel('publish',_sFoo+'/'+_sBar+'/'+_sBaz);
+
+    expect(window.callbackFoo.callCount).toBe(3);
+    expect(window.callbackBar.callCount).toBe(1);
+    expect(window.callbackBaz.callCount).toBe(1);
+    expect(window.callbackFooBar.callCount).toBe(0);
+
+
+    $.channel('subscribe',_sFoo+'/'+_sBar+'/*',window.callbackFooBar);
+    expect($.channel.debugWildcards()).toEqual([_sFoo+'/*',_sFoo+'/'+_sBar+'/*']);
+    expect($.channel.debug()[_sFoo+'/'+_sBar+'/*'].has(window.callbackFooBar)).toBeTruthy();
+
+    $.channel('publish',_sFoo+'/'+_sBar+'/'+_sBaz);
+
+    expect(window.callbackFoo.callCount).toBe(4);
+    expect(window.callbackBar.callCount).toBe(1);
+    expect(window.callbackBaz.callCount).toBe(2);
+    expect(window.callbackFooBar.callCount).toBe(1);
+
+    $.channel('unsubscribe',_sFoo+'/'+_sBar+'/*',window.callbackFooBar);
+
+    expect($.channel.debugWildcards()).toEqual([_sFoo+'/*']);
+
+    expect($.channel.debug()[_sFoo+'/'+'*'].has(window.callbackFoo)).toBeTruthy();
+    expect($.channel.debug()[_sFoo+'/'+_sBar].has(window.callbackBar)).toBeTruthy();
+    expect($.channel.debug()[_sFoo+'/'+_sBar+'/'+_sBaz].has(window.callbackBaz)).toBeTruthy();
+    expect($.channel.debug()[_sFoo+'/'+_sBar+'/*'].has(window.callbackFooBar)).not.toBeTruthy();
+
+    $.channel('publish',_sFoo+'/'+_sBar+'/'+_sBaz);
+
+    expect(window.callbackFoo.callCount).toBe(5);
+    expect(window.callbackBar.callCount).toBe(1);
+    expect(window.callbackBaz.callCount).toBe(3);
+    expect(window.callbackFooBar.callCount).toBe(1);
+
+
+  });
+
+
+it('should subscribe, unsubscribe and publish to multiple channels using the */ wildcard ',function () {
+
+    expect($.channel.debug()[_sFoo]).toBe(undefined);
+    expect($.channel.debug()[_sFoo+'*']).toBe(undefined);
+    expect($.channel.debug()[_sFoo+'/'+_sBar]).toBe(undefined);
+    expect($.channel.debug()[_sFoo+'/'+_sBar+'/'+_sBaz]).toBe(undefined);
+
+    spyOn(window, 'callbackFoo').andCallThrough();
+    spyOn(window, 'callbackBar').andCallThrough();
+    spyOn(window, 'callbackBaz').andCallThrough();
+    spyOn(window, 'callbackFooBar').andCallThrough();
+
+    $.channel('subscribe',_sFoo+'*',window.callbackFoo);
+    $.channel('subscribe',_sFoo+'/'+_sBar,window.callbackBar);
+    $.channel('subscribe',_sFoo+'/'+_sBar+'/'+_sBaz,window.callbackBaz);
+
+    expect($.channel.debugWildcards()).toEqual([_sFoo+'*']);
+    expect($.channel.debug()[_sFoo+'*'].has(window.callbackFoo)).toBeTruthy();
+    expect($.channel.debug()[_sFoo+'/'+_sBar].has(window.callbackBar)).toBeTruthy();
+    expect($.channel.debug()[_sFoo+'/'+_sBar+'/'+_sBaz].has(window.callbackBaz)).toBeTruthy();
+
+    $.channel('publish',_sBar);
+
+    expect(window.callbackFoo.callCount).toBe(0);
+    expect(window.callbackBar.callCount).toBe(0);
+    expect(window.callbackBaz.callCount).toBe(0);
+    expect(window.callbackFooBar.callCount).toBe(0);
+
+    $.channel('publish',_sFoo);
+
+    expect(window.callbackFoo.callCount).toBe(1);
+    expect(window.callbackBar.callCount).toBe(0);
+    expect(window.callbackBaz.callCount).toBe(0);
+    expect(window.callbackFooBar.callCount).toBe(0);
+
+    $.channel('publish',_sFoo+'/'+_sBaz);
+
+    expect(window.callbackFoo.callCount).toBe(2);
+    expect(window.callbackBar.callCount).toBe(0);
+    expect(window.callbackBaz.callCount).toBe(0);
+    expect(window.callbackFooBar.callCount).toBe(0);
+
+    $.channel('publish',_sFoo+'/'+_sBar);
+
+    expect(window.callbackFoo.callCount).toBe(3);
+    expect(window.callbackBar.callCount).toBe(1);
+    expect(window.callbackBaz.callCount).toBe(0);
+    expect(window.callbackFooBar.callCount).toBe(0);
+
+
+    $.channel('publish',_sFoo+'/'+_sBar+'/'+_sBaz);
+
+    expect(window.callbackFoo.callCount).toBe(4);
+    expect(window.callbackBar.callCount).toBe(1);
+    expect(window.callbackBaz.callCount).toBe(1);
+    expect(window.callbackFooBar.callCount).toBe(0);
+
+
+    $.channel('subscribe',_sFoo+'/'+_sBar+'*',window.callbackFooBar);
+    expect($.channel.debugWildcards()).toEqual([_sFoo+'*',_sFoo+'/'+_sBar+'*']);
+    expect($.channel.debug()[_sFoo+'/'+_sBar+'*'].has(window.callbackFooBar)).toBeTruthy();
+
+    $.channel('publish',_sFoo+'/'+_sBar+'/'+_sBaz);
+
+    expect(window.callbackFoo.callCount).toBe(5);
+    expect(window.callbackBar.callCount).toBe(1);
+    expect(window.callbackBaz.callCount).toBe(2);
+    expect(window.callbackFooBar.callCount).toBe(1);
+
+    $.channel('unsubscribe',_sFoo+'/'+_sBar+'*',window.callbackFooBar);
+
+    expect($.channel.debugWildcards()).toEqual([_sFoo+'*']);
+
+    expect($.channel.debug()[_sFoo+'*'].has(window.callbackFoo)).toBeTruthy();
+    expect($.channel.debug()[_sFoo+'/'+_sBar].has(window.callbackBar)).toBeTruthy();
+    expect($.channel.debug()[_sFoo+'/'+_sBar+'/'+_sBaz].has(window.callbackBaz)).toBeTruthy();
+    expect($.channel.debug()[_sFoo+'/'+_sBar+'*'].has(window.callbackFooBar)).not.toBeTruthy();
+
+    $.channel('publish',_sFoo+'/'+_sBar+'/'+_sBaz);
+
+    expect(window.callbackFoo.callCount).toBe(6);
+    expect(window.callbackBar.callCount).toBe(1);
+    expect(window.callbackBaz.callCount).toBe(3);
+    expect(window.callbackFooBar.callCount).toBe(1);
+
+
+  });
+
+
+  xit('should subscribe, unsubscribe and publish to multiple channels using the *String/ wildcard ',function () {
+
+
+
+  });
+
+  xit('should subscribe, unsubscribe and publish to multiple channels using the *String* wildcard ',function () {
+
+
+
+  });
+
+/*
  * publish
  */
 
-  it('should publish to a channel "foo" using "publish" ',function () {
+  xit('should publish to a channel "foo" using "publish" ',function () {
     expect($.channel.debug()[_sFoo]).toBe(undefined);
 
     spyOn(window, 'callbackFoo').andCallThrough();
@@ -142,7 +419,12 @@ describe('jQuery.channel ', function() {
     expect(window.callbackFoo).toHaveBeenCalled();
   });
 
-  it('should publish to a channel "foo" using "publish" and pass custom data ',function () {
+  xit('should ignore publish if no callbacks are registered" ',function () {
+    expect($.channel.debug()[_sFoo]).toBe(undefined);
+    $.channel('publish',_sFoo);
+  });
+
+  xit('should publish to a channel "foo" using "publish" and pass custom data ',function () {
     expect($.channel.debug()[_sFoo]).toBe(undefined);
     spyOn(window, 'callbackFoo').andCallThrough();
 
@@ -156,7 +438,7 @@ describe('jQuery.channel ', function() {
 
   });
 
-  it('should publish to a channel "foo" using "publish" and pass a custom context pointing to this in the callback  ',function () {
+  xit('should publish to a channel "foo" using "publish" and pass a custom context pointing to this in the callback  ',function () {
     expect($.channel.debug()[_sFoo]).toBe(undefined);
 
     spyOn(window, 'callbackFoo').andCallThrough();
@@ -170,7 +452,7 @@ describe('jQuery.channel ', function() {
   });
 
 
-  it('should publish to multiple callbacks on a single channel "foo" using "publish"  ',function () {
+  xit('should publish to multiple callbacks on a single channel "foo" using "publish"  ',function () {
 
     expect($.channel.debug()[_sFoo]).toBe(undefined);
 
@@ -202,7 +484,7 @@ describe('jQuery.channel ', function() {
   });
 
 
-  it('should publish to different callbacks on a different channels  using "publish"  ',function () {
+  xit('should publish to different callbacks on a different channels  using "publish"  ',function () {
 
     expect($.channel.debug()[_sFoo]).toBe(undefined);
 
@@ -238,7 +520,7 @@ describe('jQuery.channel ', function() {
 /**
  * unsubscribe
  */
-  it('should unsubscribe a single callback from a channel "foo" using "unsubscribe" ',function () {
+  xit('should unsubscribe a single callback from a channel "foo" using "unsubscribe" ',function () {
     expect($.channel.debug()[_sFoo]).toBe(undefined);
 
     spyOn(window, 'callbackFoo').andCallThrough();
@@ -258,7 +540,13 @@ describe('jQuery.channel ', function() {
 
   });
 
-  it('should unsubscribe a single callback from a channel "foo" using "unsubscribe" and preserve all other callbacks on this channel ',function () {
+  xit('should ignore unsubscribe if no callbacks are registered" ',function () {
+    expect($.channel.debug()[_sFoo]).toBe(undefined);
+    $.channel('unsubscribe',_sFoo);
+  });
+
+
+  xit('should unsubscribe a single callback from a channel "foo" using "unsubscribe" and preserve all other callbacks on this channel ',function () {
     expect($.channel.debug()[_sFoo]).toBe(undefined);
 
     spyOn(window, 'callbackFoo').andCallThrough();
