@@ -1,6 +1,6 @@
 {
     "name": "channel",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "title": "jQuery.channel - smart pub/sub",
     "author": {
         "name": "Martin Krause",
@@ -17,7 +17,7 @@
     "dependencies": {
         "jquery": ">=1.7"
     },
-    "description": "jQuery.channel is a complete pub/sub implementation build on top of jQuery.Callbacks. It preserves the jQuery-chain! $('div').channel('subscribe' ... ) and  you can use regular expressions (containing*) as wildcards begining on the starting position within the string. So it's possible to subscribe to multiple channels with just one call: $.channel('subscribe','CHANNEL/SUB.*',myFunction) "
+    "description": "jQuery.channel is a complete pub/sub implementation build on top of jQuery.Callbacks. It preserves the jQuery-chain! $('div').channel('subscribe' ... ) and  you can use regular expressions (containing*) as wildcards begining on the starting position within the string. So it's possible to subscribe to multiple channels with just one call: $.channel('subscribe','CHANNEL/SUB.*',myFunction) ",
     "keywords": [
         "publish",
         "ubscribe",

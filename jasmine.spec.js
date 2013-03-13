@@ -54,15 +54,15 @@ describe('jQuery.channel ', function() {
   /**
    * INTERFACE
    */
-  // xit('should expose a method called "subscribe" ',function () {
+  // it('should expose a method called "subscribe" ',function () {
   //   expect(typeof $.channel.subscribe).toBe('function');
   // });
 
-  // xit('should expose a method called "unsubscribe" ',function () {
+  // it('should expose a method called "unsubscribe" ',function () {
   //   expect(typeof $.channel.unsubscribe).toBe('function');
   // });
 
-  // xit('should expose a method called "publish" ',function () {
+  // it('should expose a method called "publish" ',function () {
   //   expect(typeof $.channel.publish).toBe('function');
   // });
 
@@ -70,7 +70,7 @@ describe('jQuery.channel ', function() {
  * subscribe
  */
 
-  xit('should subscribe to a channel "foo" using "subscribe" ',function () {
+  it('should subscribe to a channel "foo" using "subscribe" ',function () {
     expect($.channel.debug()[_sFoo]).toBe(undefined);
     $.channel('subscribe',_sFoo,window.callbackFoo);
     expect($.channel.debug()[_sFoo].has(window.callbackFoo)).toBeTruthy();
@@ -78,7 +78,7 @@ describe('jQuery.channel ', function() {
   });
 
 
-  xit('should subscribe multiple callbacks to a single channel "foo" using "subscribe"  ',function () {
+  it('should subscribe multiple callbacks to a single channel "foo" using "subscribe"  ',function () {
 
     expect($.channel.debug()[_sFoo]).toBe(undefined);
 
@@ -94,7 +94,7 @@ describe('jQuery.channel ', function() {
   });
 
 
-  xit('should subscribe callbacks to different channels using "subscribe"  ',function () {
+  it('should subscribe callbacks to different channels using "subscribe"  ',function () {
 
     expect($.channel.debug()[_sFoo]).toBe(undefined);
     expect($.channel.debug()[_sBar]).toBe(undefined);
@@ -110,7 +110,7 @@ describe('jQuery.channel ', function() {
 
   });
 
-   xit('should subscribe a callbacks to a channel ONCE even if subscribe has been called multiplet imes  ',function () {
+   it('should subscribe a callbacks to a channel ONCE even if subscribe has been called multiplet imes  ',function () {
 
     expect($.channel.debug()[_sFoo]).toBe(undefined);
 
@@ -130,7 +130,7 @@ describe('jQuery.channel ', function() {
   });
 
 
-  xit('should normalize subscriptions: FOO/BAR and FOO/BAR represent the same channel ',function () {
+  it('should normalize subscriptions: FOO/BAR and FOO/BAR represent the same channel ',function () {
 
     expect($.channel.debug()[_sFoo+'/'+_sBar]).toBe(undefined);
     expect($.channel.debug()[_sFoo+'/'+_sBar+'/']).toBe(undefined);
@@ -169,7 +169,7 @@ describe('jQuery.channel ', function() {
 
   /** nested */
 
- xit('should subscribe callbacks to different nested channels "FOO/BAR", "FOO/BAZ", "FOO/BAR/BAZ" using "subscribe"  ',function () {
+ it('should subscribe callbacks to different nested channels "FOO/BAR", "FOO/BAZ", "FOO/BAR/BAZ" using "subscribe"  ',function () {
 
     expect($.channel.debug()[_sFoo+'/'+_sBar]).toBe(undefined);
     expect($.channel.debug()[_sFoo+'/'+_sBaz]).toBe(undefined);
@@ -189,7 +189,7 @@ describe('jQuery.channel ', function() {
 
   });
 
-xit('should unsubscribe from channel  "FOO/BAR/BAZ" while preserving subscription to "FOO/BAR/BAR"  ',function () {
+it('should unsubscribe from channel  "FOO/BAR/BAZ" while preserving subscription to "FOO/BAR/BAR"  ',function () {
 
     expect($.channel.debug()[_sFoo+'/'+_sBar+'/'+_sBar]).toBe(undefined);
     expect($.channel.debug()[_sFoo+'/'+_sBar+'/'+_sBaz]).toBe(undefined);
@@ -302,13 +302,13 @@ it('should subscribe, unsubscribe and publish to multiple channels using the STR
   });
 
 
-  xit('should subscribe, unsubscribe and publish to multiple channels using the *String/ wildcard ',function () {
+  it('should subscribe, unsubscribe and publish to multiple channels using the *String/ wildcard ',function () {
 
 
 
   });
 
-  xit('should subscribe, unsubscribe and publish to multiple channels using the *String* wildcard ',function () {
+  it('should subscribe, unsubscribe and publish to multiple channels using the *String* wildcard ',function () {
 
 
 
@@ -318,7 +318,7 @@ it('should subscribe, unsubscribe and publish to multiple channels using the STR
  * publish
  */
 
-  xit('should publish to a channel "foo" using "publish" ',function () {
+  it('should publish to a channel "foo" using "publish" ',function () {
     expect($.channel.debug()[_sFoo]).toBe(undefined);
 
     spyOn(window, 'callbackFoo').andCallThrough();
@@ -330,12 +330,12 @@ it('should subscribe, unsubscribe and publish to multiple channels using the STR
     expect(window.callbackFoo).toHaveBeenCalled();
   });
 
-  xit('should ignore publish if no callbacks are registered" ',function () {
+  it('should ignore publish if no callbacks are registered" ',function () {
     expect($.channel.debug()[_sFoo]).toBe(undefined);
     $.channel('publish',_sFoo);
   });
 
-  xit('should publish to a channel "foo" using "publish" and pass custom data ',function () {
+  it('should publish to a channel "foo" using "publish" and pass custom data ',function () {
     expect($.channel.debug()[_sFoo]).toBe(undefined);
     spyOn(window, 'callbackFoo').andCallThrough();
 
@@ -349,7 +349,7 @@ it('should subscribe, unsubscribe and publish to multiple channels using the STR
 
   });
 
-  xit('should publish to a channel "foo" using "publish" and pass a custom context pointing to this in the callback  ',function () {
+  it('should publish to a channel "foo" using "publish" and pass a custom context pointing to this in the callback  ',function () {
     expect($.channel.debug()[_sFoo]).toBe(undefined);
 
     spyOn(window, 'callbackFoo').andCallThrough();
@@ -363,7 +363,7 @@ it('should subscribe, unsubscribe and publish to multiple channels using the STR
   });
 
 
-  xit('should publish to multiple callbacks on a single channel "foo" using "publish"  ',function () {
+  it('should publish to multiple callbacks on a single channel "foo" using "publish"  ',function () {
 
     expect($.channel.debug()[_sFoo]).toBe(undefined);
 
@@ -395,7 +395,7 @@ it('should subscribe, unsubscribe and publish to multiple channels using the STR
   });
 
 
-  xit('should publish to different callbacks on a different channels  using "publish"  ',function () {
+  it('should publish to different callbacks on a different channels  using "publish"  ',function () {
 
     expect($.channel.debug()[_sFoo]).toBe(undefined);
 
@@ -431,7 +431,7 @@ it('should subscribe, unsubscribe and publish to multiple channels using the STR
 /**
  * unsubscribe
  */
-  xit('should unsubscribe a single callback from a channel "foo" using "unsubscribe" ',function () {
+  it('should unsubscribe a single callback from a channel "foo" using "unsubscribe" ',function () {
     expect($.channel.debug()[_sFoo]).toBe(undefined);
 
     spyOn(window, 'callbackFoo').andCallThrough();
@@ -451,13 +451,13 @@ it('should subscribe, unsubscribe and publish to multiple channels using the STR
 
   });
 
-  xit('should ignore unsubscribe if no callbacks are registered" ',function () {
+  it('should ignore unsubscribe if no callbacks are registered" ',function () {
     expect($.channel.debug()[_sFoo]).toBe(undefined);
     $.channel('unsubscribe',_sFoo);
   });
 
 
-  xit('should unsubscribe a single callback from a channel "foo" using "unsubscribe" and preserve all other callbacks on this channel ',function () {
+  it('should unsubscribe a single callback from a channel "foo" using "unsubscribe" and preserve all other callbacks on this channel ',function () {
     expect($.channel.debug()[_sFoo]).toBe(undefined);
 
     spyOn(window, 'callbackFoo').andCallThrough();

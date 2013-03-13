@@ -4,12 +4,12 @@
  *
  * jQuery.channel
  *
- * @Version: 1.1.0
+ * @Version: 1.2.0
  *
  * @example:
 
  *
- * Copyright (c) 2012 Martin Krause (jQuery.public.mkrause.info)
+ * Copyright (c) 2011-2012 Martin Krause (jQuery.public.mkrause.info)
  * Dual licensed under the MIT and GPL licenses.
  *
  * @author Martin Krause public@mkrause.info
@@ -18,7 +18,7 @@
  * @license GNU http://www.gnu.org/licenses/gpl-3.0.html
  *
  * @requires
- *  jQuery JavaScript Library - http://jQuery.com/, v1.5+
+ *  jQuery JavaScript Library - http://jQuery.com/, v1.7+
  *    Copyright 2010, John Resig
  *    Dual licensed under the MIT or GPL Version 2 licenses - http://jQuery.org/license
  *
