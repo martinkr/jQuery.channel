@@ -4,7 +4,7 @@
  *
  * jQuery.channel
  *
- * @Version: 1.2.0
+ * @Version: 1.2.1
  *
  * @example:
 
@@ -38,6 +38,7 @@
 		 * Normalizes channel names by removing trailing slashes if neccessary
 		 * @param  {String} sChannel_ Channel name
 		 * @return {String}           Normalized channel
+		 * @private
 		 */
 		_normalize:function (sChannel_) {
 			return (sChannel_.lastIndexOf('/') === sChannel_.length-1) ? sChannel_.slice(0,-1) : sChannel_;
@@ -47,6 +48,7 @@
 		 * Push channels with wildcards to the control instance
 		 * @param  {String} sChannel_
 		 * @return {Void}
+		 * @private
 		 */
 		_setWildcard : function (sChannel_) {
 			if ( sChannel_.indexOf('*') !== -1 && $.inArray( sChannel_, _aWildcards) === -1 ) {
@@ -58,6 +60,7 @@
 		 * Remove channels with wildcards from the control instance
 		 * @param  {String} sChannel_ current channel
 		 * @return {Void}
+		 * @private
 		 */
 		_unsetWildcard : function (sChannel_) {
 			var _iPos = $.inArray( sChannel_, _aWildcards);
@@ -71,6 +74,7 @@
 		 * Basicall we're checking the current channel against the registered wildcard-channels.
 		 * @param  {String} sChannel_ current channel
 		 * @return {Array}           All channels that need to be notified
+		 * @private
 		 */
 		_filterCallbacks: function  (sChannel_){
 
@@ -97,6 +101,24 @@
 // console.log('sChannel_: ', sChannel_, ' resulted in callbacks: ', _aChannels)
 
 			return _aChannels;
+		},
+
+		/**
+		 * 	Creates the curstom arguments object.
+		 * 	Adds additional properties:
+		 * 	.data: contains the supplied custom data
+		 * 	.originalChannel: contains the original channel this data was published to
+		 *
+		 * @param   {String} sChannel_  original channel
+		 * @param   {Array}  aData_    [description]
+		 * @return  {[type]}           [description]
+		 * @private
+		 */
+		_normalizeCustomData :function (sChannel_,aData_) {
+			return {
+				"data": aData_,
+				"originalChannel":sChannel_
+			};
 		},
 
 
@@ -149,7 +171,7 @@
 			// trigger callbacks on all channels
 			for (_i = 0 ; _i < _aChannels.length; _i++) {
 				// console.log(sChannel_, " -> publish: ",_aChannels[_i],_oSubscriptions[_aChannels[_i]] )
-				_oSubscriptions[_aChannels[_i]].fireWith(oContext_||this,aData_);
+				_oSubscriptions[_aChannels[_i]].fireWith(oContext_||this,[_methods._normalizeCustomData(sChannel_,aData_)]);
 			}
 
 			return this;

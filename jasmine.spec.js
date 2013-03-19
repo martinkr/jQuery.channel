@@ -39,8 +39,10 @@ describe('jQuery.channel ', function() {
     window.CheckTwo = null;
     window.callbackFoo =  window.callbackBar = window.callbackBaz = window.callbackFooBar =  function () {
       // console.log('this: ',this)
-      window.CheckOne = arguments[0]==_sBar;
+      window.CheckOne = arguments[0].data == _sBar;
       window.CheckTwo = this == _context;
+      window.checkCustomData = arguments[0].originalChannel == _sFoo;
+
     };
   });
 
@@ -330,6 +332,7 @@ it('should subscribe, unsubscribe and publish to multiple channels using the STR
     expect(window.callbackFoo).toHaveBeenCalled();
   });
 
+
   it('should ignore publish if no callbacks are registered" ',function () {
     expect($.channel.debug()[_sFoo]).toBe(undefined);
     $.channel('publish',_sFoo);
@@ -346,6 +349,22 @@ it('should subscribe, unsubscribe and publish to multiple channels using the STR
 
     expect(window.callbackFoo).toHaveBeenCalled();
     expect(window.CheckOne).toBeTruthy();
+
+  });
+
+  it('should publish to a channel "foo" using "publish" and the custom data should contain the originial channel as "originalChannel" ',function () {
+    expect($.channel.debug()[_sFoo]).toBe(undefined);
+    spyOn(window, 'callbackFoo').andCallThrough();
+
+    expect(window.callbackFoo).not.toHaveBeenCalled();
+
+    $.channel('subscribe',_sFoo,window.callbackFoo);
+    $.channel('publish',_sFoo,[_sBar]);
+
+    expect(window.callbackFoo).toHaveBeenCalled();
+
+    expect(window.window.CheckOne).toBeTruthy();
+    expect(window.checkCustomData).toBeTruthy();
 
   });
 
