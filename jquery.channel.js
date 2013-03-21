@@ -4,7 +4,7 @@
  *
  * jQuery.channel
  *
- * @Version: 1.2.2
+ * @Version: 1.2.3
  *
  * @example:
 
@@ -27,7 +27,7 @@
 
 (function( $ ){
 
-	"use strict";
+	// "use strict";
 
 	var _oSubscriptions = {},
 		_aWildcards = [],
@@ -107,17 +107,20 @@
 		 * 	Creates the curstom arguments object.
 		 * 	Adds additional properties:
 		 * 	.data: contains the supplied custom data
-		 * 	.originalChannel: contains the original channel this data was published to
+		 * 	.originalChannel: contains the original channel this data was published to - e.g. "foo/bar"
+		 * 	.channel: contains the matched channel this data was published to - e.g. "foo/*"
 		 *
-		 * @param   {String} sChannel_  original channel
+		 * @param   {String} sOriginalChannel_  original channel
+		 * @param   {String} sChannel_  current channel
 		 * @param   {Array}  aData_    [description]
 		 * @return  {[type]}           [description]
 		 * @private
 		 */
-		_normalizeCustomData :function (sChannel_,aData_) {
+		_normalizeCustomData :function (sOriginalChannel_,sChannel_,aData_) {
 			return {
 				"data": aData_,
-				"originalChannel":sChannel_
+				"channel":sChannel_,
+				"originalChannel":sOriginalChannel_
 			};
 		},
 
@@ -171,7 +174,7 @@
 			// trigger callbacks on all channels
 			for (_i = 0 ; _i < _aChannels.length; _i++) {
 				// console.log(sChannel_, " -> publish: ",_aChannels[_i],_oSubscriptions[_aChannels[_i]] )
-				_oSubscriptions[_aChannels[_i]].fireWith(oContext_||this,[_methods._normalizeCustomData(sChannel_,aData_)]);
+				_oSubscriptions[_aChannels[_i]].fireWith(oContext_||this,[_methods._normalizeCustomData(sChannel_,_aChannels[_i],aData_)]);
 			}
 
 			return this;
@@ -203,7 +206,7 @@
 	 * @return {jQuery-Collection}  this
 	 */
 	$.channel = $.fn.channel = function( method_ ) {
-		"use strict";
+		// "use strict";
 		if ( _methods[method_] ) {
 			return _methods[ method_ ].apply( this, Array.prototype.slice.call( arguments, 1 ));
 		} else if ( typeof method_ === 'object' || ! method_ ) {

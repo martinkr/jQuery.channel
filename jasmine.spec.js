@@ -39,9 +39,11 @@ describe('jQuery.channel ', function() {
     window.CheckTwo = null;
     window.callbackFoo =  window.callbackBar = window.callbackBaz = window.callbackFooBar =  function () {
       // console.log('this: ',this)
+      console.log(arguments[0].channel,arguments[0].originalChannel)
       window.CheckOne = arguments[0].data == _sBar;
       window.CheckTwo = this == _context;
-      window.checkCustomData = arguments[0].originalChannel == _sFoo;
+      window.checkCustomData1 = arguments[0].originalChannel == _sFoo+'/'+_sBar;
+      window.checkCustomData2 = arguments[0].channel == _sFoo+'/*'
 
     };
   });
@@ -352,19 +354,20 @@ it('should subscribe, unsubscribe and publish to multiple channels using the STR
 
   });
 
-  it('should publish to a channel "foo" using "publish" and the custom data should contain the originial channel as "originalChannel" ',function () {
-    expect($.channel.debug()[_sFoo]).toBe(undefined);
+  it('should publish to a channel "foo" using "publish" and the custom data should contain the originial channel as "originalChannel" and the real channel as "channel"',function () {
+    expect($.channel.debug()[_sFoo+'/*']).toBe(undefined);
     spyOn(window, 'callbackFoo').andCallThrough();
 
     expect(window.callbackFoo).not.toHaveBeenCalled();
 
-    $.channel('subscribe',_sFoo,window.callbackFoo);
-    $.channel('publish',_sFoo,[_sBar]);
+    $.channel('subscribe',_sFoo+'/*',window.callbackFoo);
+    $.channel('publish',_sFoo+'/'+_sBar,[_sBar]);
 
     expect(window.callbackFoo).toHaveBeenCalled();
 
     expect(window.window.CheckOne).toBeTruthy();
-    expect(window.checkCustomData).toBeTruthy();
+    expect(window.checkCustomData1).toBeTruthy();
+    expect(window.checkCustomData2).toBeTruthy();
 
   });
 
