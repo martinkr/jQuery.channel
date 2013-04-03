@@ -4,7 +4,7 @@
  *
  * jQuery.channel
  *
- * @Version: 1.2.3
+ * @Version: 1.2.4
  *
  * @example:
 
@@ -24,6 +24,8 @@
  *
  */
 
+/* jshint browser:true, jquery:true, strict: false, smarttabs:true, onevar:true */
+/* global jQuery:true, -$:true */
 
 (function( $ ){
 
@@ -57,7 +59,7 @@
 		},
 
 		/**
-		 * Remove channels with wildcards from the control instance
+		 * Remove channels withwildcards from the control instance
 		 * @param  {String} sChannel_ current channel
 		 * @return {Void}
 		 * @private
@@ -79,7 +81,8 @@
 		_filterCallbacks: function  (sChannel_){
 
 			var _i,
-				_aChannels = []
+				_aChannels = [],
+				_regExp
 				;
 // console.log('---')
 // console.log('filter callbacks for :' ,sChannel_, ' with wildcards ', _aWildcards)
@@ -88,10 +91,14 @@
 				_aChannels.push(sChannel_);
 			}
 
+			// @TODO: implement publishing with wildcards!
+			// skip if there's just the wildcard and a wildcard gets published
+			// if (_aWildcards.length == 1 && _aWildcards[0] === sChannel_) { return _aChannels;}
+
 			// get all
 			for (_i = 0; _i < _aWildcards.length; _i++) {
 
-				var _regExp = new RegExp('^'+_aWildcards[_i],"g");
+				_regExp = new RegExp('^'+_aWildcards[_i],"g");
 				if ( _regExp.test(sChannel_)  ) {
 					_aChannels.push(_aWildcards[_i]);
 				}
@@ -104,11 +111,11 @@
 		},
 
 		/**
-		 * 	Creates the curstom arguments object.
-		 * 	Adds additional properties:
-		 * 	.data: contains the supplied custom data
-		 * 	.originalChannel: contains the original channel this data was published to - e.g. "foo/bar"
-		 * 	.channel: contains the matched channel this data was published to - e.g. "foo/*"
+		 * Creates the curstom arguments object.
+		 * Adds additional properties:
+		 * .data: contains the supplied custom data
+		 * .originalChannel: contains the original channel this data was published to - e.g. "foo/bar"
+		 * .channel: contains the matched channel this data was published to - e.g. "foo/*"
 		 *
 		 * @param   {String} sOriginalChannel_  original channel
 		 * @param   {String} sChannel_  current channel
@@ -132,7 +139,7 @@
 		 * @return {jQuery-Collection}  this
 		 */
 		subscribe : function( sChannel_,fn_ ) {
-			var sChannel_ = _methods._normalize(sChannel_);
+			sChannel_ = _methods._normalize(sChannel_);
 			_methods._setWildcard(sChannel_);
 
 			if (!_oSubscriptions[sChannel_])  {
@@ -150,7 +157,7 @@
 		 * @return {jQuery-Collection}  this
 		 */
 		unsubscribe : function( sChannel_,fn_ ) {
-			var sChannel_ = _methods._normalize(sChannel_);
+			sChannel_ = _methods._normalize(sChannel_);
 			_methods._unsetWildcard(sChannel_);
 
 			if( _oSubscriptions[sChannel_] && _oSubscriptions[sChannel_].has(fn_) ) {
@@ -168,8 +175,9 @@
 		 */
 		publish : function( sChannel_,aData_,oContext_ ) {
 			var  _i ,
-				sChannel_ = _methods._normalize(sChannel_),
 				_aChannels = _methods._filterCallbacks(sChannel_);
+
+			sChannel_ = _methods._normalize(sChannel_);
 
 			// trigger callbacks on all channels
 			for (_i = 0 ; _i < _aChannels.length; _i++) {

@@ -1,6 +1,6 @@
 {
     "name": "channel",
-    "version": "1.2.3",
+    "version": "1.2.4",
     "title": "jQuery.channel - smart pub/sub",
     "author": {
         "name": "Martin Krause",
