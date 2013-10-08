@@ -4,7 +4,10 @@ jQuery.channel is a complete pub/sub implementation build on top of jQuery.Callb
 
 ###Features
 - preserves the jQuery-chain! $('div').channel('subscribe' ... )
-- use regular expressions as wildcards begining on the starting position within the string. - subscribe to multiple channels with just one call: $.channel('subscribe','CHANNEL/SUB*',myFunction)
+- pass custom data while to the channel
+- manipulate the context "this" on the callback
+- use regular expressions as wildcards begining on the starting position within the string.
+- subscribe to multiple channels with just one call: $.channel('subscribe','CHANNEL/SUB*',myFunction)
 
 
 ## Examples
@@ -12,9 +15,6 @@ jQuery.channel is a complete pub/sub implementation build on top of jQuery.Callb
 ### Subscribe:
 <pre>
 	jQuery.channel('subscribe','CHANNEL/FOO/BAR', myFunction );
-	jQuery.channel('subscribe','CHANNEL/FOO.*', myFunction );
-	jQuery.channel('subscribe','CHANNEL/*.FOO/', myFunction );
-	jQuery.channel('subscribe','CHANNEL/*.FOO.*/', myFunction );
 </pre>
 
 ### Unsubscribe
@@ -30,7 +30,25 @@ jQuery.channel is a complete pub/sub implementation build on top of jQuery.Callb
 ## Advanced
 Use Wildcards.
 <pre>
-	$.channel('subscribe','CHANNEL/SUB*',myFunction)
+	jQuery.channel('subscribe','CHANNEL/FOO.*', myFunction );
+	jQuery.channel('subscribe','CHANNEL/*.FOO/', myFunction );
+	jQuery.channel('subscribe','CHANNEL/*.FOO.*/', myFunction );
+
+</pre>
+
+Pass custom data to the channel.
+<pre>
+	jQuery.channel('publish','CHANNEL/SUB/',{'key':'value'})
+</pre>
+
+Change the context aka "this".
+<pre>
+	jQuery.channel('publish','CHANNEL/SUB/',{},jQuery('#id'))
+</pre>
+
+Preserve the jQuery-chain
+<pre>
+	jQuery('#id').channel('subscribe','CHANNEL/FOO.*', myFunction ).html('subscribed!')
 </pre>
 
 
@@ -43,4 +61,4 @@ Dual licensed under the MIT and GPL licenses.
 * MIT - http://www.opensource.org/licenses/mit-license.php
 * GNU - http://www.gnu.org/licenses/gpl-3.0.html
 
-Copyright (c) 2011-2012 Martin Krause (jquery.public.mkrause.info)
+Copyright (c) 2011-2013 Martin Krause (jquery.public.mkrause.info)
