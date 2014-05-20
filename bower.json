@@ -1,0 +1,33 @@
+{
+  "name": "jQuery.channel",
+  "main": "jQuery.channel.min.js",
+  "version": "1.2.4",
+  "homepage": "https://github.com/martinkr/jQuery.channel",
+  "author": "Martin Krause",
+  "ignore": [
+    "jasmine.spec.js",
+    "*.jquery.json"
+  ],
+  "description": "jQuery.channel is a complete pub/sub implementation build on top of jQuery.Callbacks. It preserves the jQuery-chain! $('div').channel('subscribe' ... ) and  you can use regular expressions (containing*) as wildcards begining on the starting position within the string. So it's possible to subscribe to multiple channels with just one call: $.channel('subscribe','CHANNEL/SUB.*',myFunction) ",
+    "keywords": [
+        "publish",
+        "subscribe",
+        "decoupling",
+        "event-driven",
+        "observer",
+        "pattern",
+        "regexp",
+        "api"
+    ],
+    "licenses": [
+        {
+            "type": "MIT",
+            "url": "http://opensource.org/licenses/MIT",
+            "type": "GPL-3.0",
+            "url": "http://opensource.org/licenses/gpl-3.0.html"
+        }
+    ],
+    "dependencies": {
+        "jquery": ">=1.7"
+    },
+}
